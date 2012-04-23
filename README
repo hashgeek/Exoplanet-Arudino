@@ -1,0 +1,15 @@
+Kepler Visualizer
+=================
+
+Kepler Visualizer aims to visualize the data gathered by Kepler mission in 
+multiple presentation forms. It uses Arduino to visualize Kepler data and 
+present it in an audio-visual form (LED lights and complementing sound) to 
+aid us to visualize the changing star intensity.
+
+The objective is to enable school children understand how kepler data is 
+used to find extrasolar planets.
+
+currently following command is used to extract sap_flux value from txt
+file which is conveted to txt from fits using fv 
+
+$ cat kplr000757450-2010078095331_llc_t1.txt | cut -d"," -f4 | cut -d'"' -f2 >flux.txt
