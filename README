@@ -9,7 +9,18 @@ aid us to visualize the changing star intensity.
 The objective is to enable school children understand how kepler data is 
 used to find extrasolar planets.
 
-currently following command is used to extract sap_flux value from txt
-file which is conveted to txt from fits using fv 
+Project has two parts, a python program which runs on pc and a arduino
+program which runs on arduino.
 
-$ cat kplr000757450-2010078095331_llc_t1.txt | cut -d"," -f4 | cut -d'"' -f2 >flux.txt
+For python program, PyFITS library is required and can be obtained from
+http://www.stsci.edu/institute/software_hardware/pyfits
+
+On ubuntu you can install PyFITS as follows.
+$ sudo apt-get install python-pip
+$ sudo pip install pyfits
+
+Upload the arduino program to the arduino using arduino IDE. Make connections
+as commented in arduino code.
+
+$ cd Exoplanet-Arudino/src
+$ python exoplanet.py 

@@ -6,36 +6,45 @@ kepler visualizer.
 
 import time
 import serial
-
+import pyfits
+import math
+import ConfigParser
 
 def main():
-	#values are hard coaded. Will use config file later.
-	#ser = serial.Serial('/dev/ttyACM0', 9600)
-	ser = serial.Serial('/dev/ttyUSB0', 9600)
-	file = open("../data/flux.txt")
-	data = []
+        config = ConfigParser.RawConfigParser()
+	config.read('settings.cfg')
+	
+	try:
+		ser = serial.Serial(config.get('Device','usbserial'), 9600)
+	
+	except serial.serialutil.SerialException:
+		print "Please check usb serilal device and update it in settings.cfg"
+		exit()
+
+	try:
+		file = pyfits.open(config.get('Data','file'))
+
+	except IOError:
+		print "Please update correct path for fits file in settings.cfg"
+		exit()
 	
 	#Read sap_flux value
-	while 1:
-    		line = file.readline()
-    		if not line:
-        		break
-    		try:
-       			fluxVal = float(line)
-       			data.append(fluxVal)
-    		except ValueError:
-       			pass
+	tbData = file[1].data
+	sapFlux = tbData.field('SAP_FLUX')
 
-	dataMin = min(data)
-	dataMax = max(data)
+	dataMin = min(sapFlux)
+	dataMax = max(sapFlux)
         
         #Convert data to analog value 0-255 for use with arduino.
-	for i in data:
-		var = (i - dataMin)/ (dataMax-dataMin)
-        	analogVal = int(var * 255)
-		ser.write(bytes(chr(analogVal)))
-		time.sleep(0.03)
-        	print analogVal
+	for i in sapFlux:
+		if math.isnan(i):
+			pass
+		else:
+			var = (i - dataMin)/ (dataMax-dataMin)
+        		analogVal = int(var * 255)
+			ser.write(bytes(chr(analogVal)))
+			time.sleep(0.03)
+        		print analogVal
 	
 	file.close()
         analogVal = 0
